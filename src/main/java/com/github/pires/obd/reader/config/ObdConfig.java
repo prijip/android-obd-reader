@@ -25,6 +25,7 @@ import com.github.pires.obd.commands.pressure.BarometricPressureCommand;
 import com.github.pires.obd.commands.pressure.FuelPressureCommand;
 import com.github.pires.obd.commands.pressure.FuelRailPressureCommand;
 import com.github.pires.obd.commands.pressure.IntakeManifoldPressureCommand;
+import com.github.pires.obd.commands.protocol.AvailablePidsCommand_01_20;
 import com.github.pires.obd.commands.temperature.AirIntakeTemperatureCommand;
 import com.github.pires.obd.commands.temperature.AmbientAirTemperatureCommand;
 import com.github.pires.obd.commands.temperature.EngineCoolantTemperatureCommand;
@@ -85,6 +86,9 @@ public final class ObdConfig {
 
         // Misc
         cmds.add(new SpeedCommand());
+
+        // Protocol
+        cmds.add(new AvailablePidsCommand_01_20());
 
 
         return cmds;

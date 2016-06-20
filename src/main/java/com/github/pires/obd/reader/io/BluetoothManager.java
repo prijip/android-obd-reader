@@ -37,7 +37,8 @@ public class BluetoothManager {
 
         Log.d(TAG, "Starting Bluetooth connection..");
     	try {
-    		sock = dev.createRfcommSocketToServiceRecord(MY_UUID);
+            sock = dev.createInsecureRfcommSocketToServiceRecord(MY_UUID);
+    		// sock = dev.createRfcommSocketToServiceRecord(MY_UUID);
     		sock.connect();
         } catch (Exception e1) {
             Log.e(TAG, "There was an error while establishing Bluetooth connection. Falling back..", e1);
