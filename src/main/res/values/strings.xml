@@ -65,7 +65,7 @@
     <string name="pref_upload_url_title">Upload URL</string>
     <string name="pref_upload_url_summary">POST URL that will accept real-time data</string>
     <string name="pref_vehicle_id_title">Vehicle ID</string>
-    <string name="pref_vehicle_id_summary">Optional unique id of this vehicle, used with uploaded data</string>
+    <string name="pref_vehicle_id_summary">Unique id of this vehicle, used with uploaded data</string>
     <string name="pref_bluetooth_title">Enable Bluetooth</string>
     <string name="pref_bluetooth_summaryOff">Turn on Bluetooth</string>
     <string name="pref_bluetooth_summaryOn">Turn off Bluetooth</string>
@@ -106,4 +106,21 @@
     <string name="pref_dev_email_title">Developer Email</string>
     <string name="pref_dev_email_summary">Logs will be emailed to this address</string>
     <string name="text_noerrors">There were no errors found.!</string>
+    <string name="pref_vehicle_info_category_title">Vehicle Info</string>
+    <string name="pref_vehicle_info_category">vehicle_info_category</string>
+    <string name="pref_vehicle_model_title">Vehicle Model</string>
+    <string name="pref_vehicle_model_summary">Vehicle Model (e.g. WagonR)</string>
+    <string name="pref_odometer_reading_title">Odometer Reading</string>
+    <string name="pref_odometer_reading_summary">Odometer Reading</string>
+    <string name="pref_vehicle_make_year_title">Year of Manufacturing</string>
+    <string name="pref_vehicle_make_year_summary">Year of Manufacturing</string>
+    <string name="pref_fuel_type_title">Fuel Type</string>
+    <string name="pref_fuel_type_summary">Fuel Type</string>
+    <string name="pref_service_info_category">service_info_category</string>
+    <string name="pref_service_info_category_title">Service Info</string>
+    <string name="pref_is_service_completed_title">Service Completed?</string>
+    <string name="pref_is_service_completed_summaryOff">Not completed</string>
+    <string name="pref_is_service_completed_summaryOn">Completed</string>
+    <string name="pref_service_details_title">Service Details</string>
+    <string name="pref_service_details_summary">Faults, Oil change, parts replaced, etc.</string>
 </resources>

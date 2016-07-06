@@ -1,31 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
-        android:key="@string/pref_upload_category"
-        android:title="@string/pref_upload_category_title">
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:dialogTitle="@string/pref_upload_title"
-            android:key="upload_data_preference"
-            android:summaryOff="@string/pref_upload_summaryOff"
-            android:summaryOn="@string/pref_upload_summaryOn"
-            android:title="@string/pref_upload_title" />
-        <EditTextPreference
-            android:defaultValue="http://www.example.com/obd/get_data.php"
-            android:dialogTitle="@string/pref_upload_url_title"
-            android:key="upload_url_preference"
-            android:summary="@string/pref_upload_url_summary"
-            android:title="@string/pref_upload_url_title" />
+        android:key="@string/pref_vehicle_info_category"
+        android:title="@string/pref_vehicle_info_category_title">
         <EditTextPreference
             android:defaultValue=""
             android:dialogTitle="@string/pref_vehicle_id_title"
             android:key="vehicle_id_preference"
             android:summary="@string/pref_vehicle_id_summary"
             android:title="@string/pref_vehicle_id_title" />
+
+        <ListPreference
+            android:defaultValue=""
+            android:dialogTitle="@string/pref_vehicle_model_title"
+            android:key="vehicle_model_preference"
+            android:summary="@string/pref_vehicle_model_summary"
+            android:title="@string/pref_vehicle_model_title"
+            android:entries="@array/pref_vehicle_model_entries"
+            android:entryValues="@array/pref_vehicle_model_values" />
+        <EditTextPreference
+            android:defaultValue=""
+            android:dialogTitle="@string/pref_vehicle_make_year_title"
+            android:key="vehicle_make_year_preference"
+            android:summary="@string/pref_vehicle_make_year_summary"
+            android:title="@string/pref_vehicle_make_year_title" />
+        <EditTextPreference
+            android:defaultValue=""
+            android:dialogTitle="@string/pref_odometer_reading_title"
+            android:key="odometer_reading_preference"
+            android:summary="@string/pref_odometer_reading_summary"
+            android:title="@string/pref_odometer_reading_title" />
+        <ListPreference
+            android:defaultValue=""
+            android:dialogTitle="@string/pref_fuel_type_title"
+            android:key="fuel_type_preference"
+            android:summary="@string/pref_fuel_type_summary"
+            android:title="@string/pref_fuel_type_title"
+            android:entries="@array/pref_fuel_type_entries"
+            android:entryValues="@array/pref_fuel_type_values" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="@string/pref_service_info_category"
+        android:title="@string/pref_service_info_category_title">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:dialogTitle="@string/pref_is_service_completed_title"
+            android:key="is_service_completed_preference"
+            android:summaryOff="@string/pref_is_service_completed_summaryOff"
+            android:summaryOn="@string/pref_is_service_completed_summaryOn"
+            android:title="@string/pref_is_service_completed_title" />
+        <EditTextPreference
+            android:defaultValue=""
+            android:dialogTitle="@string/pref_service_details_title"
+            android:key="service_details_preference"
+            android:summary="@string/pref_service_details_summary"
+            android:title="@string/pref_service_details_title" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="@string/pref_upload_category"
+        android:title="@string/pref_upload_category_title">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dialogTitle="@string/pref_upload_title"
+            android:key="upload_data_preference"
+            android:summaryOff="@string/pref_upload_summaryOff"
+            android:summaryOn="@string/pref_upload_summaryOn"
+            android:title="@string/pref_upload_title" />
+        <EditTextPreference
+            android:defaultValue="http://www.datasharx.com:8000/telemetry/core/notifyobddata"
+            android:dialogTitle="@string/pref_upload_url_title"
+            android:key="upload_url_preference"
+            android:summary="@string/pref_upload_url_summary"
+            android:title="@string/pref_upload_url_title" />
+
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/title_pref_bluetooth">
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:dialogTitle="@string/pref_bluetooth_title"
             android:key="enable_bluetooth_preference"
             android:summaryOff="@string/pref_bluetooth_summaryOff"

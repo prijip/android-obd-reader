@@ -51,6 +51,12 @@ public class ConfigActivity extends PreferenceActivity implements OnPreferenceCh
     public static final String ENABLE_FULL_LOGGING_KEY = "enable_full_logging";
     public static final String DIRECTORY_FULL_LOGGING_KEY = "directory_full_logging";
     public static final String DEV_EMAIL_KEY = "dev_email";
+    public static final String VEHICLE_MODEL_KEY = "vehicle_model_preference";
+    public static final String VEHICLE_MAKE_YEAR_KEY = "vehicle_make_year_preference";
+    public static final String ODOMETER_READING_KEY = "odometer_reading_preference";
+    public static final String FUEL_TYPE_KEY = "fuel_type_preference";
+    public static final String IS_SERVICE_COMPLETED_KEY = "is_service_completed_preference";
+    public static final String SERVICE_DETAILS_KEY = "service_details_preference";
 
     /**
      * @param prefs
@@ -206,11 +212,17 @@ public class ConfigActivity extends PreferenceActivity implements OnPreferenceCh
         ListPreference listProtocols = (ListPreference) getPreferenceScreen()
                 .findPreference(PROTOCOLS_LIST_KEY);
         String[] prefKeys = new String[]{ENGINE_DISPLACEMENT_KEY,
-                VOLUMETRIC_EFFICIENCY_KEY, OBD_UPDATE_PERIOD_KEY, MAX_FUEL_ECON_KEY};
+                VOLUMETRIC_EFFICIENCY_KEY, OBD_UPDATE_PERIOD_KEY, MAX_FUEL_ECON_KEY,
+                VEHICLE_MODEL_KEY,
+                VEHICLE_MAKE_YEAR_KEY,
+                ODOMETER_READING_KEY,
+                VEHICLE_ID_KEY,
+                FUEL_TYPE_KEY
+        };
         for (String prefKey : prefKeys) {
-            EditTextPreference txtPref = (EditTextPreference) getPreferenceScreen()
+            Preference pref = getPreferenceScreen()
                     .findPreference(prefKey);
-            txtPref.setOnPreferenceChangeListener(this);
+            pref.setOnPreferenceChangeListener(this);
         }
 
     /*
@@ -314,8 +326,18 @@ public class ConfigActivity extends PreferenceActivity implements OnPreferenceCh
                         "Couldn't parse '" + newValue.toString() + "' as a number.",
                         Toast.LENGTH_LONG).show();
             }
+            return false;
         }
-        return false;
+
+        if (VEHICLE_MODEL_KEY.equals(preference.getKey())
+            || VEHICLE_MAKE_YEAR_KEY.equals(preference.getKey())
+            || ODOMETER_READING_KEY.equals(preference.getKey())
+            || VEHICLE_ID_KEY.equals(preference.getKey())
+            || FUEL_TYPE_KEY.equals(preference.getKey())) {
+            preference.setSummary(newValue.toString());
+        }
+
+        return true;
     }
 
     private void checkGps() {

@@ -23763,4 +23763,54 @@
         <item>Ignition Input Start</item>
         <item>Ignition Input Off</item>
     </string-array>
+
+
+    <string-array name="pref_fuel_type_entries">
+        <item>Petrol</item>
+        <item>Diesel</item>
+        <item>CNG</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="pref_fuel_type_values">
+        <item>Petrol</item>
+        <item>Diesel</item>
+        <item>CNG</item>
+        <item>Other</item>
+    </string-array>
+
+
+    <string-array name="pref_vehicle_model_entries">
+        <item>Alto-800</item>
+        <item>Alto-K10</item>
+        <item>A-Star</item>
+        <item>Celerio</item>
+        <item>Dzire</item>
+        <item>Eeco</item>
+        <item>Ertiga</item>
+        <item>Estillo</item>
+        <item>Grand-Vitara</item>
+        <item>Omni</item>
+        <item>Ritz</item>
+        <item>Stingray</item>
+        <item>Swift</item>
+        <item>SX4</item>
+        <item>Wagon-R</item>
+    </string-array>
+    <string-array name="pref_vehicle_model_values">
+        <item>Alto-800</item>
+        <item>Alto-K10</item>
+        <item>A-Star</item>
+        <item>Celerio</item>
+        <item>Dzire</item>
+        <item>Eeco</item>
+        <item>Ertiga</item>
+        <item>Estillo</item>
+        <item>Grand-Vitara</item>
+        <item>Omni</item>
+        <item>Ritz</item>
+        <item>Stingray</item>
+        <item>Swift</item>
+        <item>SX4</item>
+        <item>Wagon-R</item>
+    </string-array>
 </resources>

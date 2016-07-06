@@ -109,8 +109,13 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
     private TripLog triplog;
     private TripRecord currentTrip;
 
+    private int dataCounter;
+
     @InjectView(R.id.compass_text)
     private TextView compass;
+
+    @InjectView(R.id.data_counter_text)
+    private TextView dataCounterTextView;
     private final SensorEventListener orientListener = new SensorEventListener() {
 
         public void onSensorChanged(SensorEvent event) {
@@ -184,10 +189,28 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
                 if (prefs.getBoolean(ConfigActivity.UPLOAD_DATA_KEY, false)) {
                     // Upload the current reading by http
                     final String vin = prefs.getString(ConfigActivity.VEHICLE_ID_KEY, "UNDEFINED_VIN");
+                    final String model = prefs.getString(ConfigActivity.VEHICLE_MODEL_KEY, "");
+                    final String makeYear = prefs.getString(ConfigActivity.VEHICLE_MAKE_YEAR_KEY, "");
+                    final String odometerReading = prefs.getString(ConfigActivity.ODOMETER_READING_KEY, "");
+                    final String fuelType = prefs.getString(ConfigActivity.FUEL_TYPE_KEY, "");
+                    final boolean isServiceCompleted = prefs.getBoolean(ConfigActivity.IS_SERVICE_COMPLETED_KEY, false);
+                    final String serviceDetails = prefs.getString(ConfigActivity.SERVICE_DETAILS_KEY, "")
+                            .replace(",", ";");
+
+                    ++dataCounter;
                     Map<String, String> temp = new HashMap<String, String>();
                     temp.putAll(commandResult);
+                    temp.put("model", model);
+                    temp.put("makeYear", makeYear);
+                    temp.put("odometerReading", odometerReading);
+                    temp.put("fuelType", fuelType);
+                    temp.put("isServiceCompleted", Boolean.toString(isServiceCompleted));
+                    temp.put("serviceDetails", serviceDetails);
+                    temp.put("dataCounter", Integer.toString(dataCounter));
+
                     ObdReading reading = new ObdReading(lat, lon, alt, System.currentTimeMillis(), vin, temp);
                     new UploadAsyncTask().execute(reading);
+                    updateTextView(dataCounterTextView, Integer.toString(dataCounter));
 
                 } else if (prefs.getBoolean(ConfigActivity.ENABLE_FULL_LOGGING_KEY, false)) {
                     // Write the current reading to CSV
@@ -318,6 +341,7 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dataCounter = 0;
 
         final BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
         if (btAdapter != null)
@@ -401,6 +425,32 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
         } else {
             btStatusTextView.setText(getString(R.string.status_bluetooth_ok));
         }
+
+
+
+        if (vv.findViewWithTag("VEHICLE_MODEL") != null) {
+            TextView existingTV = (TextView) vv.findViewWithTag("VEHICLE_MODEL");
+            final String model = prefs.getString(ConfigActivity.VEHICLE_MODEL_KEY, "");
+            existingTV.setText((model == "") ? "unknown model" : model);
+        }
+
+        if (vv.findViewWithTag("VEHICLE_MAKE_YEAR") != null) {
+            TextView existingTV = (TextView) vv.findViewWithTag("VEHICLE_MAKE_YEAR");
+            final String makeYear = prefs.getString(ConfigActivity.VEHICLE_MAKE_YEAR_KEY, "");
+            existingTV.setText((makeYear == "") ? "unknown year" : makeYear);
+        }
+
+
+        if (vv.findViewWithTag("ODOMETER_READING") != null) {
+            TextView existingTV = (TextView) vv.findViewWithTag("ODOMETER_READING");
+            final String odometerReading = prefs.getString(ConfigActivity.ODOMETER_READING_KEY, "");
+            existingTV.setText((odometerReading == "") ? "unknown odometer reading" : odometerReading);
+        }
+        if (vv.findViewWithTag("PREF_FUEL_TYPE") != null) {
+            TextView existingTV = (TextView) vv.findViewWithTag("PREF_FUEL_TYPE");
+            final String fuelType = prefs.getString(ConfigActivity.FUEL_TYPE_KEY, "");
+            existingTV.setText((fuelType == "") ? "unknown fuel type" : fuelType);
+        }
     }
 
     private void updateConfig() {
@@ -443,6 +493,7 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
 
     private void startLiveData() {
         Log.d(TAG, "Starting live data..");
+        dataCounter = 0;
 
         tl.removeAllViews(); //start fresh
         doBindService();

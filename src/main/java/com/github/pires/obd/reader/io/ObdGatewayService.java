@@ -28,6 +28,7 @@ import com.google.inject.Inject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * This service is primarily responsible for establishing and maintaining a
@@ -136,8 +137,41 @@ public class ObdGatewayService extends AbstractGatewayService {
         queueJob(new ObdCommandJob(new TimeoutCommand(62)));
 
         // Get protocol from preferences
-        final String protocol = prefs.getString(ConfigActivity.PROTOCOLS_LIST_KEY, "AUTO");
-        queueJob(new ObdCommandJob(new SelectProtocolCommand(ObdProtocols.valueOf(protocol))));
+        final String protocolStr = prefs.getString(ConfigActivity.PROTOCOLS_LIST_KEY, "AUTO");
+        ObdProtocols protocol = ObdProtocols.valueOf(protocolStr);
+
+        // Kludge -->
+
+        if (protocol == ObdProtocols.AUTO) {
+            final String vehicleModel = prefs.getString(ConfigActivity.VEHICLE_MODEL_KEY, "");
+            final String[] marutiSuzukiModels = {
+                    "Alto-800",
+                    "Alto-K10",
+                    "A-Star",
+                    "Celerio",
+                    "Dzire",
+                    "Eeco",
+                    "Ertiga",
+                    "Estillo",
+                    "Grand-Vitara",
+                    "Omni",
+                    "Ritz",
+                    "Stingray",
+                    "Swift",
+                    "SX4",
+                    "Wagon-R"
+            };
+            if (Arrays.asList(marutiSuzukiModels).contains(vehicleModel)) {
+                final String fuelType = prefs.getString(ConfigActivity.FUEL_TYPE_KEY, "");
+                if (fuelType.equals("Petrol")) {
+                    protocol = ObdProtocols.ISO_15765_4_CAN;
+                } else if (fuelType.equals("Diesel")) {
+                    protocol = ObdProtocols.ISO_14230_4_KWP_FAST;
+                }
+            }
+        }
+        // Kludge <--
+        queueJob(new ObdCommandJob(new SelectProtocolCommand(protocol)));
 
         // Job for returning dummy data
         queueJob(new ObdCommandJob(new AmbientAirTemperatureCommand()));

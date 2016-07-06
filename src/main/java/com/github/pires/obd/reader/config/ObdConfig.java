@@ -26,10 +26,13 @@ import com.github.pires.obd.commands.pressure.FuelPressureCommand;
 import com.github.pires.obd.commands.pressure.FuelRailPressureCommand;
 import com.github.pires.obd.commands.pressure.IntakeManifoldPressureCommand;
 import com.github.pires.obd.commands.protocol.AvailablePidsCommand_01_20;
+import com.github.pires.obd.commands.protocol.AvailablePidsCommand_21_40;
+import com.github.pires.obd.commands.protocol.AvailablePidsCommand_41_60;
 import com.github.pires.obd.commands.temperature.AirIntakeTemperatureCommand;
 import com.github.pires.obd.commands.temperature.AmbientAirTemperatureCommand;
 import com.github.pires.obd.commands.temperature.EngineCoolantTemperatureCommand;
 import com.github.pires.obd.enums.FuelTrim;
+import com.github.pires.obd.commands.protocol.AvailablePidsCommand_Mode09_01_20;
 
 import java.util.ArrayList;
 
@@ -89,8 +92,9 @@ public final class ObdConfig {
 
         // Protocol
         cmds.add(new AvailablePidsCommand_01_20());
-
-
+        cmds.add(new AvailablePidsCommand_21_40());
+        cmds.add(new AvailablePidsCommand_41_60());
+        cmds.add(new AvailablePidsCommand_Mode09_01_20());
         return cmds;
     }
 
