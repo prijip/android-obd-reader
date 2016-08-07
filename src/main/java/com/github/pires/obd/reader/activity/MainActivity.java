@@ -21,6 +21,7 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -41,6 +42,7 @@ import com.github.pires.obd.commands.ObdCommand;
 import com.github.pires.obd.commands.SpeedCommand;
 import com.github.pires.obd.commands.engine.RPMCommand;
 import com.github.pires.obd.commands.engine.RuntimeCommand;
+import com.github.pires.obd.commands.protocol.ObdRawCommand;
 import com.github.pires.obd.enums.AvailableCommandNames;
 import com.github.pires.obd.reader.R;
 import com.github.pires.obd.reader.config.ObdConfig;
@@ -54,9 +56,12 @@ import com.github.pires.obd.reader.net.ObdReading;
 import com.github.pires.obd.reader.net.ObdService;
 import com.github.pires.obd.reader.trips.TripLog;
 import com.github.pires.obd.reader.trips.TripRecord;
+import com.google.gson.Gson;
 import com.google.inject.Inject;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -110,6 +115,7 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
     private TripRecord currentTrip;
 
     private int dataCounter;
+    private Gson gsonConverter;
 
     @InjectView(R.id.compass_text)
     private TextView compass;
@@ -207,6 +213,7 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
                     temp.put("isServiceCompleted", Boolean.toString(isServiceCompleted));
                     temp.put("serviceDetails", serviceDetails);
                     temp.put("dataCounter", Integer.toString(dataCounter));
+                    temp.put("appVer", "0.6");
 
                     ObdReading reading = new ObdReading(lat, lon, alt, System.currentTimeMillis(), vin, temp);
                     new UploadAsyncTask().execute(reading);
@@ -299,7 +306,10 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
             TextView existingTV = (TextView) vv.findViewWithTag(cmdID);
             existingTV.setText(cmdResult);
         } else addTableRow(cmdID, cmdName, cmdResult);
-        commandResult.put(cmdID, cmdResult);
+        if (!job.getState().equals(ObdCommandJob.ObdCommandJobState.EXECUTION_ERROR) &&
+                !job.getState().equals(ObdCommandJob.ObdCommandJobState.NOT_SUPPORTED)) {
+            commandResult.put(cmdID, cmdResult);
+        }
         updateTripStatistic(job, cmdID);
     }
 
@@ -342,6 +352,7 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dataCounter = 0;
+        gsonConverter = new Gson();
 
         final BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
         if (btAdapter != null)
@@ -426,7 +437,11 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
             btStatusTextView.setText(getString(R.string.status_bluetooth_ok));
         }
 
-
+        if (vv.findViewWithTag("VEHICLE_ID") != null) {
+            TextView existingTV = (TextView) vv.findViewWithTag("VEHICLE_ID");
+            final String vehicleID = prefs.getString(ConfigActivity.VEHICLE_ID_KEY, "");
+            existingTV.setText((vehicleID == "") ? "unknown" : vehicleID);
+        }
 
         if (vv.findViewWithTag("VEHICLE_MODEL") != null) {
             TextView existingTV = (TextView) vv.findViewWithTag("VEHICLE_MODEL");
@@ -494,6 +509,7 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
     private void startLiveData() {
         Log.d(TAG, "Starting live data..");
         dataCounter = 0;
+        ObdCommand.clearPIDSupported();
 
         tl.removeAllViews(); //start fresh
         doBindService();
@@ -540,6 +556,7 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
 
         releaseWakeLockIfHeld();
 
+        /*
         final String devemail = prefs.getString(ConfigActivity.DEV_EMAIL_KEY, null);
         if (devemail != null) {
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -560,6 +577,7 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
             builder.setMessage("Where there issues?\nThen please send us the logs.\nSend Logs?").setPositiveButton("Yes", dialogClickListener)
                     .setNegativeButton("No", dialogClickListener).show();
         }
+        */
 
         if (myCSVWriter != null) {
             myCSVWriter.closeLogCSVWriter();
@@ -754,13 +772,44 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
             ObdService service = restAdapter.create(ObdService.class);
             // upload readings
             for (ObdReading reading : readings) {
+                int uploadStatus = 0;
                 try {
                     Response response = service.uploadReading(reading);
-                    assert response.getStatus() == 200;
+                    uploadStatus = response.getStatus();
                 } catch (RetrofitError re) {
                     Log.e(TAG, re.toString());
                 }
 
+                reading.getReadings().put("uploadStatus", Integer.toString(uploadStatus));
+
+                try {
+                    FileOutputStream obdDataLogStream;
+
+                    File obdDataLog = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "obddata/obddata.json");
+                    String filePath = obdDataLog.getPath();
+                    Log.d("*** DBG ***", "Log File path: " + filePath);
+                    if (!obdDataLog.exists()) {
+
+                        File parentDir = obdDataLog.getParentFile();
+                        if (!parentDir.exists()) {
+                            Log.d("*** DBG ***", "Creating Directory " + parentDir.getPath());
+                            parentDir.mkdirs();
+                        }
+
+                        obdDataLog.createNewFile();
+                        Log.d("*** DBG ***", "Creating File...[Done]");
+                    }
+
+                    obdDataLogStream = new FileOutputStream(obdDataLog, true);
+
+                    obdDataLogStream.write(gsonConverter.toJson(reading).getBytes());
+                    obdDataLogStream.write(',');
+                    obdDataLogStream.write('\r');
+                    obdDataLogStream.close();
+
+                } catch (Exception e) {
+                    Log.e("*** DBG ***", "Exception", e);
+                }
             }
             Log.d(TAG, "Done");
             return null;

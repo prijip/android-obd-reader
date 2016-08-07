@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.github.pires.obd.commands.ObdCommand;
 import com.github.pires.obd.commands.protocol.EchoOffCommand;
 import com.github.pires.obd.commands.protocol.LineFeedOffCommand;
 import com.github.pires.obd.commands.protocol.ObdResetCommand;
@@ -159,14 +160,23 @@ public class ObdGatewayService extends AbstractGatewayService {
                     "Stingray",
                     "Swift",
                     "SX4",
-                    "Wagon-R"
+                    "Wagon-R",
+                    "SCross",
+                    "Baleno"
             };
             if (Arrays.asList(marutiSuzukiModels).contains(vehicleModel)) {
-                final String fuelType = prefs.getString(ConfigActivity.FUEL_TYPE_KEY, "");
-                if (fuelType.equals("Petrol")) {
+                // Nexa models seem to follow ISO_15765_4_CAN
+                if (vehicleModel.equals("SCross") || vehicleModel.equals("Baleno")) {
                     protocol = ObdProtocols.ISO_15765_4_CAN;
-                } else if (fuelType.equals("Diesel")) {
-                    protocol = ObdProtocols.ISO_14230_4_KWP_FAST;
+                } else {
+                    // Current observation is that rest of the models protocol can be
+                    // identified using fuel-type
+                    final String fuelType = prefs.getString(ConfigActivity.FUEL_TYPE_KEY, "");
+                    if (fuelType.equals("Petrol")) {
+                        protocol = ObdProtocols.ISO_15765_4_CAN;
+                    } else if (fuelType.equals("Diesel")) {
+                        protocol = ObdProtocols.ISO_14230_4_KWP_FAST;
+                    }
                 }
             }
         }
@@ -214,7 +224,15 @@ public class ObdGatewayService extends AbstractGatewayService {
                     Log.d(TAG, "Job state is NEW. Run it..");
                     job.setState(ObdCommandJobState.RUNNING);
                     if (sock.isConnected()) {
-                        job.getCommand().run(sock.getInputStream(), sock.getOutputStream());
+                        ObdCommand command = job.getCommand();
+                        if (ObdCommand.isCommandSupported(command)) {
+
+                            System.err.println("***DEBUG***: Command IS supported: " + command.getRawCommandString());
+                            command.run(sock.getInputStream(), sock.getOutputStream());
+                        } else {
+                            System.err.println("***DEBUG***: Command not supported: " + command.getRawCommandString());
+                            job.setState(ObdCommandJobState.NOT_SUPPORTED);
+                        }
                     } else {
                         job.setState(ObdCommandJobState.EXECUTION_ERROR);
                         Log.e(TAG, "Can't run command on a closed socket.");

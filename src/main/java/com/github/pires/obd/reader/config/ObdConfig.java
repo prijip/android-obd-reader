@@ -1,5 +1,7 @@
 package com.github.pires.obd.reader.config;
 
+import android.util.Log;
+
 import com.github.pires.obd.commands.ObdCommand;
 import com.github.pires.obd.commands.SpeedCommand;
 import com.github.pires.obd.commands.control.DistanceMILOnCommand;
@@ -32,7 +34,11 @@ import com.github.pires.obd.commands.temperature.AirIntakeTemperatureCommand;
 import com.github.pires.obd.commands.temperature.AmbientAirTemperatureCommand;
 import com.github.pires.obd.commands.temperature.EngineCoolantTemperatureCommand;
 import com.github.pires.obd.enums.FuelTrim;
+import com.github.pires.obd.commands.protocol.AvailablePidsCommand_Mode02_01_20;
+import com.github.pires.obd.commands.protocol.AvailablePidsCommand_Mode02_21_40;
+import com.github.pires.obd.commands.protocol.AvailablePidsCommand_Mode02_41_60;
 import com.github.pires.obd.commands.protocol.AvailablePidsCommand_Mode09_01_20;
+import com.github.pires.obd.commands.protocol.ObdRawCommand;
 
 import java.util.ArrayList;
 
@@ -44,7 +50,17 @@ public final class ObdConfig {
     public static ArrayList<ObdCommand> getCommands() {
         ArrayList<ObdCommand> cmds = new ArrayList<>();
 
+        // Protocol
+        cmds.add(new AvailablePidsCommand_01_20());
+        cmds.add(new AvailablePidsCommand_21_40());
+        cmds.add(new AvailablePidsCommand_41_60());
+        cmds.add(new AvailablePidsCommand_Mode02_01_20());
+        cmds.add(new AvailablePidsCommand_Mode02_21_40());
+        cmds.add(new AvailablePidsCommand_Mode02_41_60());
+        cmds.add(new AvailablePidsCommand_Mode09_01_20());
+
         // Control
+        /*
         cmds.add(new ModuleVoltageCommand());
         cmds.add(new EquivalentRatioCommand());
         cmds.add(new DistanceMILOnCommand());
@@ -89,12 +105,24 @@ public final class ObdConfig {
 
         // Misc
         cmds.add(new SpeedCommand());
+        */
 
-        // Protocol
-        cmds.add(new AvailablePidsCommand_01_20());
-        cmds.add(new AvailablePidsCommand_21_40());
-        cmds.add(new AvailablePidsCommand_41_60());
-        cmds.add(new AvailablePidsCommand_Mode09_01_20());
+        // Custom Commands
+        // All Mode 01 Commands
+        for (int pid = 0x00; pid < 0x61; ++pid) {
+            String commandString = String.format("01 %02X", pid);
+            cmds.add(new ObdRawCommand(commandString));
+        }
+
+        for (int pid = 0x00; pid < 0x21; ++pid) {
+            String commandString = String.format("09 %02X", pid);
+            cmds.add(new ObdRawCommand(commandString));
+        }
+        //cmds.add(new ObdRawCommand("01 03")); // Fuel System Status
+        //cmds.add(new ObdRawCommand("01 13")); // Oxygen sensor present
+        //cmds.add(new ObdRawCommand("01 14")); // Oxygen sensor volts bank 1 sensor 1
+        //cmds.add(new ObdRawCommand("01 1C")); // OBD computer specification
+
         return cmds;
     }
 

@@ -43,7 +43,7 @@ public class MockObdGatewayService extends AbstractGatewayService {
      */
         queueJob(new ObdCommandJob(new EchoOffCommand()));
         queueJob(new ObdCommandJob(new LineFeedOffCommand()));
-        queueJob(new ObdCommandJob(new TimeoutCommand(62)));
+        queueJob(new ObdCommandJob(new TimeoutCommand(254)));
 
         // For now set protocol to AUTO
         queueJob(new ObdCommandJob(new SelectProtocolCommand(ObdProtocols.AUTO)));

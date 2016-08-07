@@ -23795,6 +23795,8 @@
         <item>Swift</item>
         <item>SX4</item>
         <item>Wagon-R</item>
+        <item>SCross</item>
+        <item>Baleno</item>
     </string-array>
     <string-array name="pref_vehicle_model_values">
         <item>Alto-800</item>
@@ -23812,5 +23814,7 @@
         <item>Swift</item>
         <item>SX4</item>
         <item>Wagon-R</item>
+        <item>SCross</item>
+        <item>Baleno</item>
     </string-array>
 </resources>

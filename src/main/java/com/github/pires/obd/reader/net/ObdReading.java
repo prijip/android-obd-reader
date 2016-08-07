@@ -13,6 +13,7 @@
 
 package com.github.pires.obd.reader.net;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +23,7 @@ import java.util.Map;
 public class ObdReading {
     private double latitude, longitude, altitude;
     private long timestamp;
+    private String timestamphr; // Human readable timestamp
     private String vehicleid; // vehicle id
     private Map<String, String> readings;
 
@@ -35,6 +37,8 @@ public class ObdReading {
         this.longitude = longitude;
         this.altitude = altitude;
         this.timestamp = timestamp;
+        Timestamp ts = new Timestamp(timestamp);
+        this.timestamphr = ts.toString();
         this.vehicleid = vehicleid;
         this.readings = readings;
     }
@@ -66,6 +70,8 @@ public class ObdReading {
     public long getTimestamp() {
         return timestamp;
     }
+
+    public String getTimestamphr() { return timestamphr; }
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
