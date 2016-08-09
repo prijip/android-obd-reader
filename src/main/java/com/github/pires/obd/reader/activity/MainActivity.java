@@ -213,7 +213,7 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
                     temp.put("isServiceCompleted", Boolean.toString(isServiceCompleted));
                     temp.put("serviceDetails", serviceDetails);
                     temp.put("dataCounter", Integer.toString(dataCounter));
-                    temp.put("appVer", "0.6");
+                    temp.put("appVer", "0.7");
 
                     ObdReading reading = new ObdReading(lat, lon, alt, System.currentTimeMillis(), vin, temp);
                     new UploadAsyncTask().execute(reading);

@@ -59,6 +59,8 @@ public final class ObdConfig {
         cmds.add(new AvailablePidsCommand_Mode02_41_60());
         cmds.add(new AvailablePidsCommand_Mode09_01_20());
 
+        cmds.add(new TroubleCodesCommand());
+
         // Control
         /*
         cmds.add(new ModuleVoltageCommand());

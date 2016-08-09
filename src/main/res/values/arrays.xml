@@ -23797,6 +23797,7 @@
         <item>Wagon-R</item>
         <item>SCross</item>
         <item>Baleno</item>
+        <item>Ciaz</item>
     </string-array>
     <string-array name="pref_vehicle_model_values">
         <item>Alto-800</item>
@@ -23816,5 +23817,6 @@
         <item>Wagon-R</item>
         <item>SCross</item>
         <item>Baleno</item>
+        <item>Ciaz</item>
     </string-array>
 </resources>

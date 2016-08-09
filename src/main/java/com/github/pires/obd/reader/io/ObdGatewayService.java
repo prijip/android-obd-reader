@@ -162,11 +162,12 @@ public class ObdGatewayService extends AbstractGatewayService {
                     "SX4",
                     "Wagon-R",
                     "SCross",
-                    "Baleno"
+                    "Baleno",
+                    "Ciaz"
             };
             if (Arrays.asList(marutiSuzukiModels).contains(vehicleModel)) {
                 // Nexa models seem to follow ISO_15765_4_CAN
-                if (vehicleModel.equals("SCross") || vehicleModel.equals("Baleno")) {
+                if (vehicleModel.equals("SCross") || vehicleModel.equals("Baleno") || vehicleModel.equals("Ciaz")) {
                     protocol = ObdProtocols.ISO_15765_4_CAN;
                 } else {
                     // Current observation is that rest of the models protocol can be
